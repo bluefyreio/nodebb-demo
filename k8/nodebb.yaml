@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodebb
+  labels:
+    name: web
+    app: nodebb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 4567
+      protocol: TCP
+  selector:
+    app: nodebb
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+   name: nodebb
+spec:
+   replicas: 1
+   template:
+     metadata:
+       labels:
+         app: nodebb
+         name: web         
+     spec:
+       containers:
+       - name: nodebb
+         image: nodebb:v1
+         command: ["node"]
+         args: ["app"]         
+         ports:
+         - containerPort: 4567
+         env:
+         - name: NODE_ENV
+           value: 
+         - name: BLUEFYRE_AGENT_ID
+           valueFrom:
+             secretKeyRef:
+               name: bluefyre-agent-id
+               key: agentid         
+         - name: mongo__host
+           value: mongo
+         - name: mongo__port
+           value: "27017"
+         - name: mongo__database
+           value: nodebb
+         - name: mongo__uri
+           value: 
+         - name: DEBUG
+           value: "bluefyre:*"            

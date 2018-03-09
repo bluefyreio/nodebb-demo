@@ -18,6 +18,7 @@
 */
 
 'use strict';
+var agent = require('bluefyre-agent-node')
 
 if (require.main !== module) {
 	require.main.require = function (path) {
