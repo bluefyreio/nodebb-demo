@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "هل تريد بالتأكيد إعادة تحميل NodeBB؟",
+	"alert.confirm-restart": "هل تريد بالتأكيد إعادة تشغيل NodeBB؟",
+
+	"acp-title": "لوحة تحكم إدارة NodeBB | %1",
+	"settings-header-contents": "محتويات"
+}
