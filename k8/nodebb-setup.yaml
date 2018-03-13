@@ -29,6 +29,11 @@ spec:
           value: nodebb
         - name: mongo__uri
           value: 
+        - name: secret
+          valueFrom:
+            secretKeyRef:
+              name: cookiesecret
+              key: cookiesecret
         - name: setup
           value: "true"
         command: ["node", "app"]          

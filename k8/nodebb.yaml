@@ -29,13 +29,15 @@ spec:
        containers:
        - name: nodebb
          image: nodebb:v1
-         command: ["node"]
-         args: ["app"]         
+         command: ["/bin/bash"]
+         args: ["-c", "./nodebb setup && ./nodebb start"]
          ports:
          - containerPort: 4567
          env:
          - name: NODE_ENV
            value: 
+         - name: BLUEFYRE_API_COLLECTOR_URL
+           value: "http://sample.bluefyre.io"                       
          - name: BLUEFYRE_AGENT_ID
            valueFrom:
              secretKeyRef:
@@ -49,5 +51,17 @@ spec:
            value: nodebb
          - name: mongo__uri
            value: 
-         - name: DEBUG
-           value: "bluefyre:*"            
+         - name: database
+           value: mongo
+         - name: "socket.io__origins"
+           value: "*:*"                          
+         - name: admin__username
+           valueFrom:
+             secretKeyRef:
+               name: nodebbadminusername
+               key: nodebbadminusername
+         - name: admin__password
+           valueFrom:
+             secretKeyRef:
+               name: nodebbadminpassword
+               key: nodebbadminpassword
