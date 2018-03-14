@@ -6,10 +6,10 @@ A Node.js web application based on the popular [NodeBB](https://github.com/nodeb
 
 
 ## Instructions
-This repo sets up the docker image for the NodeBB application v1.7.5 using MongoDB.
+This repo sets up the docker image for the NodeBB application v1.7.5 using MongoDB. Refer the [blog post]( https://www.bluefyre.io/nodejs-kubernetes-nodebb-part1) for additional details.
 
 ## Prerequisites
-Refer to this [blog post](https://bluefyre.io/nodejs-appsec-kubernetes-nodebb) for prerequisites for minikube, xhyve, OSX. You can certainly run this without minikube as well.
+Refer to this [blog post](https://www.bluefyre.io/nodejs-kubernetes-nodebb-part1) for prerequisites for minikube, hyperkit, OSX. You can certainly run this without minikube as well.
 
 If you're running minikube on OSX, make sure to run the following to set the right context for your docker images
 ```
