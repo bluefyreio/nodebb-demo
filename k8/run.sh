@@ -18,15 +18,21 @@ kubectl get secrets --namespace=nodebb
 kubectl create -f mongo.yaml --namespace=nodebb
 
 # run the setup job
-kubectl create -f nodebb-setup.yaml --namespace=nodebb
+# kubectl create -f nodebb-setup.yaml --namespace=nodebb
 
 # run the nodebb service
 kubectl create -f nodebb.yaml --namespace=nodebb
 
+# setup the ingress controller
+kubectl create -f nodebb-ingress.yaml -n nodebb
+kubectl create -f nodebb-ingress-sticky.yaml -n nodebb
 
 
 # clear everything
 kubectl delete service,deployment,replicationcontroller,job,persistentvolumeclaim,secret --all --namespace=nodebb
+
+# clear ingress controller
+kubectl delete ingress nodebb-ingress
 
 # clear just infrastructure without secrets
 kubectl delete service,deployment,replicationcontroller,job,persistentvolumeclaim --all --namespace=nodebb
