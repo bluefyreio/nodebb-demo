@@ -28,7 +28,7 @@ spec:
      spec:
        containers:
        - name: nodebb
-         image: nodebb:v1
+         image: sandbox02registry.azurecr.io/nodebb:v1
          command: ["/bin/bash"]
          args: ["-c", "./nodebb setup && ./nodebb start"]
          ports:

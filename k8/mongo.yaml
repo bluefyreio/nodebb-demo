@@ -12,19 +12,22 @@ spec:
   selector:
     name: mongo
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongo-pv-claim
   labels:
-    app: nodebb
+    name: mongo
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
-      storage: 200Mi
----
+      storage: 1Gi
+---      
 apiVersion: v1
 kind: ReplicationController
 metadata:
