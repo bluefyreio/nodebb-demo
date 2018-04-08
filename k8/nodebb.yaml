@@ -19,7 +19,7 @@ kind: Deployment
 metadata:
    name: nodebb
 spec:
-   replicas: 1
+   replicas: 3
    template:
      metadata:
        labels:
@@ -28,7 +28,7 @@ spec:
      spec:
        containers:
        - name: nodebb
-         image: sandbox02registry.azurecr.io/nodebb:v1
+         image: sandbox02registry.azurecr.io/nodebb:v4
          command: ["/bin/bash"]
          args: ["-c", "./nodebb setup && ./nodebb start"]
          ports:
@@ -36,8 +36,8 @@ spec:
          env:
          - name: NODE_ENV
            value: 
-         - name: BLUEFYRE_API_COLLECTOR_URL
-           value: "http://sample.bluefyre.io"                       
+#         - name: BLUEFYRE_API_COLLECTOR_URL
+ #          value: "http://sample.bluefyre.io"                       
          - name: BLUEFYRE_AGENT_ID
            valueFrom:
              secretKeyRef:
@@ -53,8 +53,12 @@ spec:
            value: 
          - name: database
            value: mongo
-         - name: "socket.io__origins"
+         - name: "socketio__origins"
+           value: "*:*"                                     
+         - name: "socket_io__origins"
            value: "*:*"                          
+         - name: "socketioorigins"
+           value: "*:*"                                     
          - name: admin__username
            valueFrom:
              secretKeyRef:

@@ -6,9 +6,10 @@ metadata:
     name: web
     app: nodebb  
   annotations:
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/affinity: cookie
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    kubernetes.io/ingress.class: "nginx"
 
 spec:
   rules:

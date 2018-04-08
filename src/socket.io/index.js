@@ -38,10 +38,14 @@ Sockets.init = function (server) {
 	 * Production only so you don't get accidentally locked out.
 	 * Can be overridden via config (socket.io:origins)
 	 */
+	winston.info('[socket.io] socket_io setup')	
+	winston.info('[socket.io] socket.io:origins=',nconf.get('socket.io:origins'))
+	winston.info('[socket.io] socketio:origins=',nconf.get('socketio:origins'))	
+	winston.info('[socket.io] socketioorigins=',nconf.get('socketioorigins'))	
 	if (process.env.NODE_ENV !== 'development') {
 		var domain = nconf.get('cookieDomain');
 		var parsedUrl = url.parse(nconf.get('url'));
-		var override = nconf.get('socket.io:origins');
+		var override = nconf.any(['socket.io:origins','socketioorigins','socketio:origins']);
 		if (!domain) {
 			domain = parsedUrl.hostname;	// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
 		}
