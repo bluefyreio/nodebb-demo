@@ -82,8 +82,8 @@ kubectl delete ingress nodebb-ingress
 # clear just infrastructure without secrets
 kubectl delete svc,deployment,rc,job,pv,pvc --all --namespace=nodebb
 
-# clear just the app
-kubectl delete svc,deployment -l name=web --namespace=nodebb
+# clear just the app, ingress
+kubectl delete svc,deployment,ing -l name=web --namespace=nodebb
 
 # clear the setup job
 kubectl delete job -l app=nodebb-init --namespace=nodebb
