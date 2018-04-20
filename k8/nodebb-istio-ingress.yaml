@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nodebb-ingress-sticky
+  labels:
+    name: web
+    app: nodebb  
+  annotations:
+#    nginx.ingress.kubernetes.io/affinity: cookie
+#    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+#    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - host: nodebb.all
+    http: 
+      paths:
+      - path: /.*
+        backend:
+          serviceName: nodebb
+          servicePort: 80        
+---

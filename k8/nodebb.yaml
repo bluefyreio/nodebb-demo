@@ -6,11 +6,12 @@ metadata:
     name: web
     app: nodebb
 spec:
-  type: LoadBalancer
+#  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 4567
-      protocol: TCP
+#      protocol: TCP
+      name: http
   selector:
     app: nodebb
 ---

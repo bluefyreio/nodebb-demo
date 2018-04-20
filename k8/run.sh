@@ -7,7 +7,7 @@
 
 # Azure Container registry
     # set up azure container registry
-    az acr create --name sandbox02registry --sku Basic
+    az acr create --name sandbox02registry --sku Basic --no-wait
 
     # login to the container reg
     az acr login --name sandbox02registry
@@ -67,7 +67,9 @@ kubectl create -f nodebb-ingress-sticky.yaml -n nodebb
 
 
 # get current status
-kubectl get svc,deployment,rc,job,pvc,pv,secret,po  -w
+kubectl get svc,deployment,rc,job,pvc,pv,secret,po
+kubectl get svc -w -n nodebb
+kubectl get svc -n kube-system
 
 # get the loadbalanced ip
 kubectl get svc -n kube-system -l app=nginx-ingress -l component=controller

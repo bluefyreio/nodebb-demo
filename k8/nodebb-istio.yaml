@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodebb
+  labels:
+    name: web
+    app: nodebb
+spec:
+#  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 4567
+#      protocol: TCP
+      name: http
+  selector:
+    app: nodebb
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: nodebb
+spec:
+  replicas: 3
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/status: '{"version":"43466efda2266e066fb5ad36f2d1658de02fc9411f6db00ccff561300a2a3c78","initContainers":["istio-init","enable-core-dump"],"containers":["istio-proxy"],"volumes":["istio-envoy","istio-certs"]}'
+      creationTimestamp: null
+      labels:
+        app: nodebb
+        name: web
+    spec:
+      containers:
+      - args:
+        - -c
+        - ./nodebb setup && ./nodebb start
+        command:
+        - /bin/bash
+        env:
+        - name: NODE_ENV
+        - name: BLUEFYRE_AGENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: agentid
+              name: bluefyre-agent-id
+        - name: mongo__host
+          value: mongo
+        - name: mongo__port
+          value: "27017"
+        - name: mongo__database
+          value: nodebb
+        - name: mongo__uri
+        - name: database
+          value: mongo
+        - name: socketio__origins
+          value: '*:*'
+        - name: socket_io__origins
+          value: '*:*'
+        - name: socketioorigins
+          value: '*:*'
+        - name: admin__username
+          valueFrom:
+            secretKeyRef:
+              key: nodebbadminusername
+              name: nodebbadminusername
+        - name: admin__password
+          valueFrom:
+            secretKeyRef:
+              key: nodebbadminpassword
+              name: nodebbadminpassword
+        image: sandbox02registry.azurecr.io/nodebb:v4
+        name: nodebb
+        ports:
+        - containerPort: 4567
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - --configPath
+        - /etc/istio/proxy
+        - --binaryPath
+        - /usr/local/bin/envoy
+        - --serviceCluster
+        - nodebb
+        - --drainDuration
+        - 45s
+        - --parentShutdownDuration
+        - 1m0s
+        - --discoveryAddress
+        - istio-pilot.istio-system:8080
+        - --discoveryRefreshDelay
+        - 1s
+        - --zipkinAddress
+        - zipkin.istio-system:9411
+        - --connectTimeout
+        - 10s
+        - --statsdUdpAddress
+        - istio-mixer.istio-system:9125
+        - --proxyAdminPort
+        - "15000"
+        - --controlPlaneAuthPolicy
+        - NONE
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy:0.7.1
+        imagePullPolicy: IfNotPresent
+        name: istio-proxy
+        resources: {}
+        securityContext:
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsUser: 1337
+        volumeMounts:
+        - mountPath: /etc/istio/proxy
+          name: istio-envoy
+        - mountPath: /etc/certs/
+          name: istio-certs
+          readOnly: true
+      initContainers:
+      - args:
+        - -p
+        - "15001"
+        - -u
+        - "1337"
+        image: docker.io/istio/proxy_init:0.7.1
+        imagePullPolicy: IfNotPresent
+        name: istio-init
+        resources: {}
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+      - args:
+        - -c
+        - sysctl -w kernel.core_pattern=/etc/istio/proxy/core.%e.%p.%t && ulimit -c
+          unlimited
+        command:
+        - /bin/sh
+        image: alpine
+        imagePullPolicy: IfNotPresent
+        name: enable-core-dump
+        resources: {}
+        securityContext:
+          privileged: true
+      volumes:
+      - emptyDir:
+          medium: Memory
+        name: istio-envoy
+      - name: istio-certs
+        secret:
+          optional: true
+          secretName: istio.default
+status: {}
+---
