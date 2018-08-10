@@ -35,6 +35,8 @@ ACR_ID=$(az acr show --name sandbox02registry --query "id" --output tsv)
 az configure defaults --defaults group=''
 az role assignment create --assignee $CLIENT_ID --role Reader --scope $ACR_ID
 
+# get helm running to install nginx-ingress
+
 # set up the namespace
 kubectl create -f namespace.yaml
 
