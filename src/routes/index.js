@@ -143,6 +143,12 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
+	// respond with 200 for health check
+	app.get('/healthz', function (req, res) {
+		res.status(200).send('healthy')
+	})
+  
+
 	for (x = 0; x < routers.length; x += 1) {
 		app.use(relativePath || '/', routers[x]);
 	}
